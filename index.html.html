@@ -1,0 +1,496 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>VALENTINE</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg1:#0a1530;
+      --bg2:#0c3b6b;
+      --pink:#ff4fa3;
+      --pink2:#ff7ac3;
+      --shadow:#00000055;
+      --green:#34c759;
+      --red:#ff3b30;
+    }
+
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      height:100vh;
+      font-family:"Press Start 2P", system-ui, sans-serif;
+      overflow:hidden;
+      background: linear-gradient(180deg, var(--bg1), var(--bg2));
+    }
+
+    .stage{
+      position:relative;
+      width:100%;
+      height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:20px;
+    }
+
+    .screen{
+      position:absolute;
+      inset:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex-direction:column;
+      gap:18px;
+      opacity:0;
+      pointer-events:none;
+      transition: opacity .35s ease;
+    }
+    .screen.active{
+      opacity:1;
+      pointer-events:auto;
+    }
+
+    .title{
+      font-size:34px;
+      letter-spacing:2px;
+      color:var(--pink);
+      text-shadow:4px 4px 0 #000;
+      text-align:center;
+    }
+
+    .hint{
+      font-size:12px;
+      color:#d9d9d9;
+      text-shadow:3px 3px 0 #000;
+      text-align:center;
+      line-height:1.6;
+    }
+
+    .card{
+      width:min(520px, 92vw);
+      background:#fff;
+      border-radius:18px;
+      padding:22px 18px;
+      box-shadow:0 14px 35px var(--shadow);
+    }
+
+    .frame{
+      border:6px solid var(--pink);
+      border-radius:18px;
+      padding:20px 14px;
+      background:linear-gradient(180deg, #ffffff, #fff6fb);
+      position:relative;
+    }
+    .frame::before{
+      content:"";
+      position:absolute;
+      inset:10px;
+      border:4px solid var(--pink2);
+      border-radius:14px;
+      pointer-events:none;
+      opacity:.9;
+    }
+
+    .question{
+      color:var(--pink);
+      text-shadow:3px 3px 0 #000;
+      font-size:18px;
+      text-align:center;
+      line-height:1.6;
+      margin:6px 12px 18px;
+      position:relative;
+      z-index:2;
+    }
+
+    .btns{
+      position:relative;
+      min-height:190px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:16px;
+      padding:8px 0 6px;
+      z-index:2;
+    }
+
+    .btn{
+      width:170px;
+      height:56px;
+      border:none;
+      border-radius:12px;
+      font-family:inherit;
+      font-size:16px;
+      color:#fff;
+      cursor:pointer;
+      box-shadow:0 10px 0 #000;
+      transform: translateY(0);
+      transition: transform .05s ease;
+      user-select:none;
+      position:relative;
+      z-index:3;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+    }
+    .btn:active{
+      transform: translateY(6px);
+      box-shadow:0 4px 0 #000;
+    }
+    .btn.green{ background:var(--green); }
+
+    .btn.red{
+      background:var(--red);
+      position:absolute;
+      left:50%;
+      transform:translateX(-50%);
+      bottom:10px;
+      z-index:1;
+    }
+
+    /* “vibración” visual del botón NO */
+    .shake{
+      animation: shake .25s linear 1;
+    }
+    @keyframes shake{
+      0%{ transform: translateX(0); }
+      20%{ transform: translateX(-6px); }
+      40%{ transform: translateX(6px); }
+      60%{ transform: translateX(-5px); }
+      80%{ transform: translateX(5px); }
+      100%{ transform: translateX(0); }
+    }
+
+    /* FLASH rosa de pantalla */
+    .flash{
+      animation: flashPink 0.15s ease 1;
+    }
+    @keyframes flashPink{
+      0%   { background-color: rgba(255, 79, 163, 0.0); }
+      50%  { background-color: rgba(255, 79, 163, 0.35); }
+      100% { background-color: rgba(255, 79, 163, 0.0); }
+    }
+
+    /* Mensajito flotante */
+    .toast{
+      position:absolute;
+      top:18px;
+      left:50%;
+      transform:translateX(-50%);
+      background:#00000066;
+      border:2px solid #ffffff22;
+      color:#fff;
+      padding:10px 14px;
+      border-radius:12px;
+      font-size:10px;
+      text-shadow:2px 2px 0 #000;
+      opacity:0;
+      pointer-events:none;
+      transition: opacity .15s ease, transform .15s ease;
+      z-index:50;
+      max-width:92vw;
+      text-align:center;
+    }
+    .toast.show{
+      opacity:1;
+      transform:translateX(-50%) translateY(4px);
+    }
+
+    .msg{
+      font-size:12px;
+      line-height:1.9;
+      text-align:center;
+      margin:6px 18px 10px;
+    }
+
+    .big{
+      font-size:20px;
+      color:var(--pink);
+      text-shadow:3px 3px 0 #000;
+      text-align:center;
+      margin-bottom:12px;
+    }
+
+    .emojiRow{
+      font-size:28px;
+      text-align:center;
+      margin-top:10px;
+    }
+
+    .credit{
+      position:absolute;
+      left:50%;
+      transform:translateX(-50%);
+      bottom:22px;
+      padding:10px 14px;
+      font-size:10px;
+      color:#eaeaea;
+      background:#00000055;
+      border-radius:12px;
+      text-shadow:2px 2px 0 #000;
+      max-width:92vw;
+      text-align:center;
+    }
+
+    .hearts{
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+      overflow:hidden;
+    }
+    .heart{
+      position:absolute;
+      top:-40px;
+      font-size:26px;
+      opacity:.95;
+      animation: fall linear forwards;
+      filter: drop-shadow(0 6px 0 #00000033);
+    }
+    @keyframes fall{
+      to{ transform: translateY(calc(100vh + 80px)); }
+    }
+
+    .softPinkBg{
+      background: radial-gradient(circle at 30% 20%, #ffd1e6, #ffb6d8 40%, #ff9fcd 70%, #ff88c2);
+    }
+
+    @media (max-width:420px){
+      .title{ font-size:26px; }
+      .question{ font-size:16px; }
+      .btn{ width:160px; }
+    }
+  </style>
+</head>
+
+<body>
+<div class="stage" id="stage">
+  <div class="hearts" id="hearts"></div>
+
+  <!-- Mensajito flotante -->
+  <div class="toast" id="toast">No tan rápido 👀</div>
+
+  <section class="screen active" id="screenStart" aria-label="Inicio">
+    <h1 class="title">VALENTINE</h1>
+    <div class="hint">Toca la pantalla<br>para comenzar...</div>
+    <div class="credit">Con AMOR tu ING FAVORITO</div>
+  </section>
+
+  <section class="screen" id="screenAsk" aria-label="Pregunta">
+    <div class="card">
+      <div class="frame">
+        <div class="question" id="questionText"></div>
+
+        <div class="btns" id="btnArea">
+          <button class="btn green" id="btnYes" type="button">SI</button>
+          <button class="btn red" id="btnNo" type="button">NO</button>
+        </div>
+      </div>
+    </div>
+    <div class="credit">TE AMO MUCHO BONITA</div>
+  </section>
+
+  <section class="screen" id="screenYes" aria-label="Aceptó">
+    <div class="card">
+      <div class="frame">
+        <div class="big">¡Gracias por aceptar!</div>
+        <div class="msg" id="finalMsg"></div>
+        <div class="emojiRow">💞 💖 💝 💘 💗</div>
+      </div>
+    </div>
+    <div class="credit">Feliz San Valentín Mi Amor</div>
+  </section>
+</div>
+
+<script>
+  const stage = document.getElementById("stage");
+  const hearts = document.getElementById("hearts");
+
+  const screenStart = document.getElementById("screenStart");
+  const screenAsk = document.getElementById("screenAsk");
+  const screenYes = document.getElementById("screenYes");
+
+  const btnYes = document.getElementById("btnYes");
+  const btnNo = document.getElementById("btnNo");
+  const btnArea = document.getElementById("btnArea");
+
+  const questionText = document.getElementById("questionText");
+  const finalMsg = document.getElementById("finalMsg");
+  const toast = document.getElementById("toast");
+
+  // Nombres como pediste
+  const NOMBRE_PREGUNTA = "Yessica Arleth";
+  const NOMBRE_FINAL = "Bonita";
+
+  questionText.innerHTML = `${NOMBRE_PREGUNTA},<br>¿quieres ser mi Valentine?`;
+  finalMsg.innerHTML =
+    "Me haces muy feliz.<br>" +
+    "Eres lo mejor de mi vida.<br><br>" +
+    `Te quiero mucho, ${NOMBRE_FINAL}.<br>` +
+    "Gracias por decir que si.";
+
+  function showScreen(screen){
+    [screenStart, screenAsk, screenYes].forEach(s => s.classList.remove("active"));
+    screen.classList.add("active");
+
+    if(screen === screenAsk || screen === screenYes){
+      stage.classList.add("softPinkBg");
+    } else {
+      stage.classList.remove("softPinkBg");
+    }
+  }
+
+  // Sonidito “tap” para iPhone (WebAudio)
+  let audioReady = false;
+  const AudioCtx = window.AudioContext || window.webkitAudioContext;
+  const audioCtx = AudioCtx ? new AudioCtx() : null;
+
+  async function unlockAudio(){
+    if(!audioCtx || audioReady) return;
+    try{
+      await audioCtx.resume();
+      audioReady = true;
+    }catch(e){}
+  }
+
+  function playTap(){
+    if(!audioCtx || !audioReady) return;
+    const o = audioCtx.createOscillator();
+    const g = audioCtx.createGain();
+    o.type = "sine";
+    o.frequency.value = 680;
+    g.gain.value = 0.0001;
+
+    o.connect(g);
+    g.connect(audioCtx.destination);
+
+    const now = audioCtx.currentTime;
+    g.gain.setValueAtTime(0.0001, now);
+    g.gain.exponentialRampToValueAtTime(0.12, now + 0.01);
+    g.gain.exponentialRampToValueAtTime(0.0001, now + 0.08);
+
+    o.start(now);
+    o.stop(now + 0.09);
+  }
+
+  // Flash rosa pantalla
+  function flashScreen(){
+    stage.classList.remove("flash");
+    void stage.offsetWidth;
+    stage.classList.add("flash");
+  }
+
+  // Toast (mensajito)
+  let toastTimer = null;
+  function showToast(text){
+    toast.textContent = text;
+    toast.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove("show"), 700);
+  }
+
+  // Iniciar
+  function startIfOnIntro(){
+    if(screenStart.classList.contains("active")) showScreen(screenAsk);
+  }
+  window.addEventListener("pointerdown", async () => {
+    await unlockAudio(); // desbloquea audio al primer toque
+    startIfOnIntro();
+  });
+  window.addEventListener("keydown", startIfOnIntro);
+
+  // SI
+  btnYes.addEventListener("click", (e) => {
+    e.stopPropagation();
+    showScreen(screenYes);
+  });
+
+  function rand(min, max){ return Math.random() * (max - min) + min; }
+
+  function shakeNo(){
+    btnNo.classList.remove("shake");
+    void btnNo.offsetWidth;
+    btnNo.classList.add("shake");
+  }
+
+  function moveNoButton(){
+    const area = btnArea.getBoundingClientRect();
+    const noR = btnNo.getBoundingClientRect();
+    const yesR = btnYes.getBoundingClientRect();
+
+    const pad = 10;
+    const maxX = area.width - noR.width - pad;
+    const maxY = area.height - noR.height - pad;
+
+    const forbid = {
+      x1: (yesR.left - area.left) - 14,
+      y1: (yesR.top  - area.top)  - 14,
+      x2: (yesR.right - area.left) + 14,
+      y2: (yesR.bottom - area.top) + 14,
+    };
+
+    let x, y, tries = 0;
+    do{
+      x = rand(pad, Math.max(pad, maxX));
+      y = rand(pad, Math.max(pad, maxY));
+      tries++;
+    }while(
+      tries < 30 &&
+      x < forbid.x2 && (x + noR.width) > forbid.x1 &&
+      y < forbid.y2 && (y + noR.height) > forbid.y1
+    );
+
+    btnNo.style.left = x + "px";
+    btnNo.style.top = y + "px";
+    btnNo.style.bottom = "auto";
+    btnNo.style.transform = "none";
+  }
+
+  // Interacción con NO (iPhone)
+  const frases = [
+    "No tan rápido 👀",
+    "¿Segura? 😏",
+    "Intenta otra vez 😂",
+    "Ayyy no 😳",
+    "Ese botón no sirve 😌"
+  ];
+  function randomPhrase(){
+    return frases[Math.floor(Math.random() * frases.length)];
+  }
+
+  btnNo.addEventListener("pointerdown", (e) => {
+    e.preventDefault();
+    playTap();
+    shakeNo();
+    flashScreen();
+    showToast(randomPhrase());
+    moveNoButton();
+  });
+
+  btnNo.addEventListener("mouseenter", () => {
+    playTap();
+    shakeNo();
+    flashScreen();
+    showToast(randomPhrase());
+    moveNoButton();
+  });
+
+  // Corazones
+  function spawnHeart(){
+    const el = document.createElement("div");
+    el.className = "heart";
+    const emojis = ["💗","💖","💞","💘","💝","💓","💟"];
+    el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+    el.style.left = rand(0, 100) + "vw";
+    el.style.fontSize = rand(18, 34) + "px";
+    el.style.animationDuration = rand(4.5, 9.5) + "s";
+    hearts.appendChild(el);
+    setTimeout(() => el.remove(), 10000);
+  }
+  setInterval(spawnHeart, 220);
+</script>
+</body>
+</html>
