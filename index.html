@@ -7,7 +7,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Great+Vibes&display=swap" rel="stylesheet">
 
   <style>
     :root{
@@ -71,7 +71,7 @@
       text-shadow:3px 3px 0 #000;
       text-align:center;
       line-height:1.6;
-      padding:0 18px;
+      margin:0 18px;
     }
 
     .card{
@@ -80,7 +80,6 @@
       border-radius:18px;
       padding:22px 18px;
       box-shadow:0 14px 35px var(--shadow);
-      position:relative;
     }
 
     .frame{
@@ -230,7 +229,6 @@
       text-shadow:2px 2px 0 #000;
       max-width:92vw;
       text-align:center;
-      backdrop-filter: blur(2px);
     }
 
     .hearts{
@@ -261,102 +259,31 @@
       .btn{ width:160px; }
     }
 
-    /* === PANTALLA TE AMO (PRE) === */
-    #screenPre{
-      gap:14px;
-    }
-    .preWrap{
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      justify-content:center;
-      gap:14px;
-      padding:10px 0;
-    }
-    .loveBtn{
-      width:min(320px, 86vw);
-      height:210px;
-      border:none;
-      background:transparent;
-      cursor:pointer;
-      position:relative;
-      -webkit-tap-highlight-color: transparent;
-      touch-action: manipulation;
-      filter: drop-shadow(0 14px 0 #00000055);
-    }
-    .loveBtn::before{
-      content:"";
-      position:absolute;
-      inset:0;
-      background: radial-gradient(circle at 35% 30%, #ffb6d8, #ff4fa3 55%, #d81b70);
-      clip-path: path("M160 205 C60 145 12 108 12 68 C12 32 40 12 72 12 C98 12 121 26 132 45 C143 26 166 12 192 12 C224 12 252 32 252 68 C252 108 204 145 160 205 Z");
-      border-radius:26px;
-      box-shadow: 0 14px 35px rgba(0,0,0,.35);
-      outline: 4px solid rgba(255,255,255,.16);
-      outline-offset: -10px;
-    }
-    .loveBtn:active{
-      transform: translateY(6px);
-      filter: drop-shadow(0 8px 0 #00000055);
-    }
-    .loveTxt{
-      position:absolute;
-      left:50%;
-      top:44%;
-      transform:translate(-50%,-50%);
-      color:#fff;
-      font-size:28px;
-      text-shadow:4px 4px 0 #000;
-      letter-spacing:2px;
-      white-space:nowrap;
-    }
-    .loveHint{
-      position:absolute;
-      left:50%;
-      top:68%;
-      transform:translate(-50%,-50%);
-      color:#fff;
-      font-size:12px;
-      opacity:.95;
-      text-shadow:3px 3px 0 #000;
-      white-space:nowrap;
-    }
-    .preSub{
-      font-size:10px;
-      color:#d9d9d9;
-      text-shadow:3px 3px 0 #000;
-      text-align:center;
-      line-height:1.6;
-      padding:0 18px;
-      opacity:.95;
-    }
-
     /* === COLLAGE FINAL === */
-    #screenCollage{
+    #screenCollage {
       background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
       color: white;
       padding: 20px;
       overflow-y: auto;
     }
 
-    .collage-title{
+    .collage-title {
       text-align: center;
       font-size: 28px;
-      margin: 10px 0 18px;
-      text-shadow:4px 4px 0 #000;
-      color: var(--pink);
+      margin: 0 0 20px 0;
+      text-shadow: 3px 3px 0 #000;
+      color: var(--pink2);
     }
 
-    .collage{
+    .collage {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 12px;
       max-width: 900px;
       margin: 0 auto;
-      padding-bottom: 80px;
     }
 
-    .collage img{
+    .collage img {
       width: 100%;
       height: 220px;
       object-fit: cover;
@@ -365,13 +292,85 @@
       transition: transform 0.3s ease;
     }
 
-    .collage img:hover{
-      transform: scale(1.05);
-    }
+    .collage img:hover { transform: scale(1.05); }
 
-    .collage img.main{
+    .collage img.main {
       grid-column: span 3;
       height: 320px;
+    }
+
+    /* === PRE INICIO (CORAZÓN) === */
+    #screenPre{
+      gap: 10px;
+    }
+
+    .loveBtn{
+      appearance:none;
+      border:none;
+      background:transparent;
+      cursor:pointer;
+      padding:0;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+      user-select:none;
+      position:relative;
+      transform: translateY(0);
+      filter: drop-shadow(0 16px 0 #00000055);
+      animation: pulse 1.25s ease-in-out infinite;
+    }
+
+    @keyframes pulse{
+      0%,100%{ transform: scale(1) translateY(0); }
+      50%{ transform: scale(1.06) translateY(-2px); }
+    }
+
+    .loveBtn::after{
+      content:"";
+      position:absolute;
+      left:50%;
+      top:50%;
+      width:220px;
+      height:220px;
+      transform:translate(-50%,-50%);
+      border-radius:999px;
+      background: radial-gradient(circle, rgba(255,255,255,0.20), rgba(255,255,255,0.0) 60%);
+      opacity:.55;
+      pointer-events:none;
+      animation: halo 1.25s ease-in-out infinite;
+    }
+
+    @keyframes halo{
+      0%,100%{ transform:translate(-50%,-50%) scale(1); opacity:.45; }
+      50%{ transform:translate(-50%,-50%) scale(1.12); opacity:.65; }
+    }
+
+    .loveBtn.opening{
+      animation:none;
+      transform: scale(1.08);
+    }
+
+    .loveBtn.opening svg{
+      animation: openPop .55s ease forwards;
+    }
+
+    @keyframes openPop{
+      0%{ transform: scale(1); opacity:1; }
+      70%{ transform: scale(1.18); opacity:1; }
+      100%{ transform: scale(0.85); opacity:0; }
+    }
+
+    .loveText{
+      font-family: "Great Vibes", cursive;
+      font-size: 64px;
+      fill: #ffffff;
+      stroke: rgba(0,0,0,0.45);
+      stroke-width: 3px;
+      paint-order: stroke fill;
+      letter-spacing: 1px;
+    }
+
+    @media (max-width:420px){
+      .loveText{ font-size: 54px; }
     }
   </style>
 </head>
@@ -379,17 +378,45 @@
 <body>
   <div class="stage" id="stage">
     <div class="hearts" id="hearts"></div>
-
     <div class="toast" id="toast">No tan rápido 👀</div>
 
     <section class="screen active" id="screenPre" aria-label="Inicio amor">
-      <div class="preWrap">
-        <button class="loveBtn" id="btnLove" type="button" aria-label="Te amo">
-          <span class="loveTxt">TE AMO</span>
-          <span class="loveHint">TOCA AQUÍ</span>
-        </button>
-        <div class="preSub">Toca el corazón para comenzar</div>
-      </div>
+      <button class="loveBtn" id="btnLove" type="button" aria-label="Te amo">
+        <svg width="360" height="320" viewBox="0 0 360 320" role="img" aria-hidden="true">
+          <defs>
+            <linearGradient id="gHeart" x1="0" x2="1" y1="0" y2="1">
+              <stop offset="0" stop-color="#ff5aa8"/>
+              <stop offset="1" stop-color="#ff2e8f"/>
+            </linearGradient>
+            <linearGradient id="gBow" x1="0" x2="1" y1="0" y2="0">
+              <stop offset="0" stop-color="#ffd1e6"/>
+              <stop offset="1" stop-color="#ff9fcd"/>
+            </linearGradient>
+          </defs>
+
+          <path d="M180 290
+                   C 80 230, 30 170, 45 110
+                   C 58 60, 105 45, 140 65
+                   C 160 77, 172 98, 180 112
+                   C 188 98, 200 77, 220 65
+                   C 255 45, 302 60, 315 110
+                   C 330 170, 280 230, 180 290 Z"
+                fill="url(#gHeart)"/>
+
+          <path d="M90 140
+                   C 120 115, 155 115, 170 145
+                   C 155 175, 120 175, 90 150 Z"
+                fill="url(#gBow)" opacity="0.95"/>
+          <path d="M270 140
+                   C 240 115, 205 115, 190 145
+                   C 205 175, 240 175, 270 150 Z"
+                fill="url(#gBow)" opacity="0.95"/>
+          <ellipse cx="180" cy="148" rx="18" ry="14" fill="#ffb6d8" opacity="0.95"/>
+
+          <text x="180" y="170" text-anchor="middle" class="loveText">TE AMO</text>
+        </svg>
+      </button>
+
       <div class="credit">Con AMOR tu ING FAVORITO</div>
     </section>
 
@@ -403,7 +430,6 @@
       <div class="card">
         <div class="frame">
           <div class="question" id="questionText"></div>
-
           <div class="btns" id="btnArea">
             <button class="btn green" id="btnYes" type="button">SI</button>
             <button class="btn red" id="btnNo" type="button">NO</button>
@@ -426,20 +452,18 @@
 
     <section class="screen" id="screenCollage" aria-label="Collage">
       <h2 class="collage-title">Nuestros recuerdos 💕</h2>
-
       <div class="collage">
-        <img src="fotos/1.jpeg" class="main" alt="foto 1">
-        <img src="fotos/2.jpeg" alt="foto 2">
-        <img src="fotos/3.jpeg" alt="foto 3">
-        <img src="fotos/4.jpeg" alt="foto 4">
-        <img src="fotos/5.jpeg" alt="foto 5">
-        <img src="fotos/6.jpeg" alt="foto 6">
-        <img src="fotos/7.jpeg" alt="foto 7">
-        <img src="fotos/8.jpeg" alt="foto 8">
-        <img src="fotos/9.jpeg" alt="foto 9">
-        <img src="fotos/10.jpeg" alt="foto 10">
+        <img src="fotos/1.jpeg" class="main" alt="">
+        <img src="fotos/2.jpeg" alt="">
+        <img src="fotos/3.jpeg" alt="">
+        <img src="fotos/4.jpeg" alt="">
+        <img src="fotos/5.jpeg" alt="">
+        <img src="fotos/6.jpeg" alt="">
+        <img src="fotos/7.jpeg" alt="">
+        <img src="fotos/8.jpeg" alt="">
+        <img src="fotos/9.jpeg" alt="">
+        <img src="fotos/10.jpeg" alt="">
       </div>
-
       <div class="credit">Siempre tú y yo 💖</div>
     </section>
   </div>
@@ -469,15 +493,6 @@
 
     const bgMusic = document.getElementById("bgMusic");
 
-    function playMusic(){
-      if(!bgMusic) return;
-      bgMusic.volume = 0.8;
-      bgMusic.muted = false;
-
-      const p = bgMusic.play();
-      if(p !== undefined) p.catch(() => {});
-    }
-
     function showScreen(screen){
       [screenPre, screenStart, screenAsk, screenYes, screenCollage].forEach(s => s.classList.remove("active"));
       screen.classList.add("active");
@@ -487,6 +502,14 @@
       } else {
         stage.classList.remove("softPinkBg");
       }
+    }
+
+    function playMusic(){
+      if(!bgMusic) return;
+      bgMusic.volume = 0.8;
+      bgMusic.muted = false;
+      const p = bgMusic.play();
+      if(p !== undefined){ p.catch(() => {}); }
     }
 
     const NOMBRE_PREGUNTA = "Yessica Arleth";
@@ -545,6 +568,41 @@
       toastTimer = setTimeout(() => toast.classList.remove("show"), 700);
     }
 
+    function startIfOnStart(){
+      if(screenStart.classList.contains("active")) showScreen(screenAsk);
+    }
+
+    btnLove.addEventListener("click", async (e) => {
+      e.preventDefault();
+      await unlockAudio();
+      playMusic(); // en iPhone no puede sonar “solo” sin toque, este toque lo activa
+      btnLove.classList.add("opening");
+      setTimeout(() => {
+        btnLove.classList.remove("opening");
+        showScreen(screenStart);
+      }, 600);
+    });
+
+    window.addEventListener("pointerdown", async () => {
+      await unlockAudio();
+      playMusic();
+      startIfOnStart();
+    });
+
+    window.addEventListener("keydown", async () => {
+      await unlockAudio();
+      playMusic();
+      startIfOnStart();
+    });
+
+    btnYes.addEventListener("click", (e) => {
+      e.stopPropagation();
+      showScreen(screenYes);
+      setTimeout(() => {
+        showScreen(screenCollage);
+      }, 20000);
+    });
+
     function rand(min, max){ return Math.random() * (max - min) + min; }
 
     function shakeNo(){
@@ -597,37 +655,6 @@
       return frases[Math.floor(Math.random() * frases.length)];
     }
 
-    function startIfOnStart(){
-      if(screenStart.classList.contains("active")) showScreen(screenAsk);
-    }
-
-    btnLove.addEventListener("click", async (e) => {
-      e.stopPropagation();
-      await unlockAudio();
-      playMusic();
-      showScreen(screenStart);
-    });
-
-    window.addEventListener("pointerdown", async () => {
-      await unlockAudio();
-      if(!screenPre.classList.contains("active")) playMusic();
-      startIfOnStart();
-    });
-
-    window.addEventListener("keydown", () => {
-      if(!screenPre.classList.contains("active")) playMusic();
-      startIfOnStart();
-    });
-
-    btnYes.addEventListener("click", (e) => {
-      e.stopPropagation();
-      showScreen(screenYes);
-
-      setTimeout(() => {
-        showScreen(screenCollage);
-      }, 20000);
-    });
-
     btnNo.addEventListener("pointerdown", (e) => {
       e.preventDefault();
       playTap();
@@ -635,6 +662,7 @@
       flashScreen();
       showToast(randomPhrase());
       moveNoButton();
+      if(navigator.vibrate) navigator.vibrate(60);
     });
 
     btnNo.addEventListener("mouseenter", () => {
@@ -660,7 +688,6 @@
   </script>
 </body>
 </html>
-
 
 
 
