@@ -229,6 +229,7 @@
       text-shadow:2px 2px 0 #000;
       max-width:92vw;
       text-align:center;
+      z-index: 5;
     }
 
     .hearts{
@@ -372,6 +373,50 @@
     @media (max-width:420px){
       .loveText{ font-size: 54px; }
     }
+
+    /* === PANTALLA VIDEOS (NUEVA) === */
+    #screenVideos{
+      background: linear-gradient(135deg, #0b1026, #241a52, #0b1026);
+      padding: 20px;
+    }
+
+    .videoWrap{
+      width: min(900px, 92vw);
+      height: min(520px, 62vh);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      border-radius: 18px;
+      position:relative;
+      overflow:hidden;
+      box-shadow: 0 14px 35px var(--shadow);
+      background: rgba(0,0,0,0.35);
+      border: 4px solid rgba(255,255,255,0.18);
+    }
+
+    #videoPlayer{
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      background: #000;
+    }
+
+    /* animaciones tipo “slide” */
+    .fadeIn{
+      animation: fadeIn .55s ease both;
+    }
+    @keyframes fadeIn{
+      from{ opacity:0; transform: scale(0.98); }
+      to{ opacity:1; transform: scale(1); }
+    }
+
+    .fadeOut{
+      animation: fadeOut .45s ease both;
+    }
+    @keyframes fadeOut{
+      from{ opacity:1; transform: scale(1); }
+      to{ opacity:0; transform: scale(0.985); }
+    }
   </style>
 </head>
 
@@ -466,6 +511,14 @@
       </div>
       <div class="credit">Siempre tú y yo 💖</div>
     </section>
+
+    <!-- ✅ NUEVA PANTALLA DE VIDEOS -->
+    <section class="screen" id="screenVideos" aria-label="Videos">
+      <div class="videoWrap">
+        <video id="videoPlayer" autoplay muted playsinline></video>
+      </div>
+      <div class="credit">Nuestros momentos 💞</div>
+    </section>
   </div>
 
   <audio id="bgMusic" loop preload="auto">
@@ -481,6 +534,7 @@
     const screenAsk = document.getElementById("screenAsk");
     const screenYes = document.getElementById("screenYes");
     const screenCollage = document.getElementById("screenCollage");
+    const screenVideos = document.getElementById("screenVideos"); // 👈 nuevo
 
     const btnLove = document.getElementById("btnLove");
     const btnYes = document.getElementById("btnYes");
@@ -493,11 +547,25 @@
 
     const bgMusic = document.getElementById("bgMusic");
 
+    const videoPlayer = document.getElementById("videoPlayer"); // 👈 nuevo
+
+    // ✅ LISTA DE VIDEOS (deben existir en /videos/)
+    // Ejemplo: videos/1.mp4, videos/2.mp4, ...
+    const videoList = [
+      "videos/1.mp4",
+      "videos/2.mp4",
+      "videos/3.mp4",
+      "videos/4.mp4",
+      "videos/5.mp4"
+    ];
+
+    let videoIndex = 0;
+
     function showScreen(screen){
-      [screenPre, screenStart, screenAsk, screenYes, screenCollage].forEach(s => s.classList.remove("active"));
+      [screenPre, screenStart, screenAsk, screenYes, screenCollage, screenVideos].forEach(s => s.classList.remove("active"));
       screen.classList.add("active");
 
-      if(screen === screenAsk || screen === screenYes || screen === screenCollage){
+      if(screen === screenAsk || screen === screenYes || screen === screenCollage || screen === screenVideos){
         stage.classList.add("softPinkBg");
       } else {
         stage.classList.remove("softPinkBg");
@@ -572,10 +640,37 @@
       if(screenStart.classList.contains("active")) showScreen(screenAsk);
     }
 
+    // ✅ Videos: cargar y reproducir
+    function playCurrentVideo(){
+      if(!videoPlayer || videoList.length === 0) return;
+
+      videoPlayer.classList.remove("fadeIn");
+      void videoPlayer.offsetWidth;
+
+      videoPlayer.src = videoList[videoIndex];
+      videoPlayer.load();
+
+      const p = videoPlayer.play();
+      if(p !== undefined){ p.catch(() => {}); }
+
+      videoPlayer.classList.add("fadeIn");
+    }
+
+    function nextVideo(){
+      if(videoList.length === 0) return;
+      videoIndex = (videoIndex + 1) % videoList.length;
+      playCurrentVideo();
+    }
+
+    // cuando termine un video, pasa al siguiente
+    videoPlayer.addEventListener("ended", () => {
+      nextVideo();
+    });
+
     btnLove.addEventListener("click", async (e) => {
       e.preventDefault();
       await unlockAudio();
-      playMusic(); // en iPhone no puede sonar “solo” sin toque, este toque lo activa
+      playMusic(); // iPhone: debe ser por toque
       btnLove.classList.add("opening");
       setTimeout(() => {
         btnLove.classList.remove("opening");
@@ -598,8 +693,18 @@
     btnYes.addEventListener("click", (e) => {
       e.stopPropagation();
       showScreen(screenYes);
+
+      // ✅ a los 10s pasa al collage
       setTimeout(() => {
         showScreen(screenCollage);
+
+        // ✅ después de 10s en collage pasa a videos y empieza slideshow
+        setTimeout(() => {
+          showScreen(screenVideos);
+          videoIndex = 0;
+          playCurrentVideo();
+        }, 10000);
+
       }, 10000);
     });
 
@@ -688,7 +793,6 @@
   </script>
 </body>
 </html>
-
 
 
 
