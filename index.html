@@ -372,6 +372,7 @@
   const screenStart = document.getElementById("screenStart");
   const screenAsk = document.getElementById("screenAsk");
   const screenYes = document.getElementById("screenYes");
+  const screenCollage = document.getElementById("screenCollage");
 
   const btnYes = document.getElementById("btnYes");
   const btnNo = document.getElementById("btnNo");
@@ -392,16 +393,17 @@
     `Te quiero mucho, ${NOMBRE_FINAL}.<br>` +
     "Gracias por decir que si.";
 
-  function showScreen(screen){
-    [screenStart, screenAsk, screenYes].forEach(s => s.classList.remove("active"));
-    screen.classList.add("active");
+function showScreen(screen){
+  [screenStart, screenAsk, screenYes, screenCollage].forEach(s => s.classList.remove("active"));
+  screen.classList.add("active");
 
-    if(screen === screenAsk || screen === screenYes){
-      stage.classList.add("softPinkBg");
-    } else {
-      stage.classList.remove("softPinkBg");
-    }
+  if(screen === screenAsk || screen === screenYes || screen === screenCollage){
+    stage.classList.add("softPinkBg");
+  } else {
+    stage.classList.remove("softPinkBg");
   }
+}
+
 
   // Sonidito “tap” para iPhone (WebAudio)
   let audioReady = false;
@@ -463,10 +465,17 @@
   window.addEventListener("keydown", startIfOnIntro);
 
   // SI
-  btnYes.addEventListener("click", (e) => {
-    e.stopPropagation();
-    showScreen(screenYes);
-  });
+btnYes.addEventListener("click", (e) => {
+  e.stopPropagation();
+
+  // Muestra el mensaje primero
+  showScreen(screenYes);
+
+  // Después de 2.2 segundos muestra el collage
+  setTimeout(() => {
+    showScreen(screenCollage);
+  }, 2200);
+});
 
   function rand(min, max){ return Math.random() * (max - min) + min; }
 
@@ -554,5 +563,6 @@
 </script>
 </body>
 </html>
+
 
 
