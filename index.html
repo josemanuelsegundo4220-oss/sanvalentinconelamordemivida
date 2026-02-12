@@ -382,6 +382,14 @@
   const questionText = document.getElementById("questionText");
   const finalMsg = document.getElementById("finalMsg");
   const toast = document.getElementById("toast");
+const bgMusic = document.getElementById("bgMusic");
+
+function playMusic(){
+  if(bgMusic && bgMusic.paused){
+    bgMusic.volume = 0.6; // volumen suave
+    bgMusic.play().catch(()=>{});
+  }
+}
 
   // Nombres como pediste
   const NOMBRE_PREGUNTA = "Yessica Arleth";
@@ -459,11 +467,17 @@ function showScreen(screen){
   function startIfOnIntro(){
     if(screenStart.classList.contains("active")) showScreen(screenAsk);
   }
-  window.addEventListener("pointerdown", async () => {
-    await unlockAudio(); // desbloquea audio al primer toque
-    startIfOnIntro();
-  });
-  window.addEventListener("keydown", startIfOnIntro);
+window.addEventListener("pointerdown", async () => {
+  await unlockAudio(); // desbloquea audio al primer toque
+  playMusic();         // 🎶 inicia música
+  startIfOnIntro();
+});
+
+window.addEventListener("keydown", () => {
+  playMusic();         // 🎶 inicia música
+  startIfOnIntro();
+});
+
 
   // SI
 btnYes.addEventListener("click", (e) => {
@@ -562,8 +576,12 @@ btnYes.addEventListener("click", (e) => {
   }
   setInterval(spawnHeart, 220);
 </script>
+  <audio id="bgMusic" loop>
+  <source src="musica.mp3" type="audio/mpeg">
+</audio>
 </body>
 </html>
+
 
 
 
